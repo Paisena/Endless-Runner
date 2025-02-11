@@ -23,4 +23,5 @@ const config = {
 
 const game = new Phaser.Game(config)
 
-let keyENTER
+let keyENTER, keyLEFT, keyRIGHT 
+

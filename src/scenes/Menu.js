@@ -5,12 +5,13 @@ class Menu extends Phaser.Scene {
 
     preload() {
         // load images/tile sprites
-
+        this.load.image('fakeCar', './assets/fakeCar.jpg')
     }
 
     create() {
         keyENTER = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER)
-
+        keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT)
+        keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT)
     }
 
     update () {
