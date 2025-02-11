@@ -1,23 +1,26 @@
 // Project: Endless Runner
 // Name: Jonathan Ng
+// Game Title: TODODODODOODODODOD
+// Approximate Hours: TODODODOODODODODO 
 // Date: 2/10/2025
 
 'use strict'
 
 const config = {
     parent: 'phaser-game',  // for info text
-    type: Phaser.WEBGL,     // for tinting
-    width: 400,
-    height: 300,
+    type: Phaser.AUTO,
+    width: 1900,
+    height: 890,
     pixelArt: true,
-    zoom: 2,
     physics: {
         default: "arcade",
         arcade: {
             debug: true
         }
     },
-    scene: [ Load, Play ]
+    scene: [ Menu , Play ]
 }
 
 const game = new Phaser.Game(config)
+
+let keyENTER
