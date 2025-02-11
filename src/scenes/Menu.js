@@ -6,6 +6,7 @@ class Menu extends Phaser.Scene {
     preload() {
         // load images/tile sprites
         this.load.image('fakeCar', './assets/fakeCar.jpg')
+        this.load.image('fakeRock', './assets/fakeRock.jpg')
     }
 
     create() {

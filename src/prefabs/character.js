@@ -3,7 +3,7 @@ class character extends Phaser.GameObjects.Sprite {
         super(scene, x, y, texture, frame)
         
         scene.add.existing(this)
-        this.position = 1
+        this.position = 0
     }
 
     update() {
@@ -43,7 +43,6 @@ class character extends Phaser.GameObjects.Sprite {
     updateCar() {
         switch (this.position) {
             case 0:
-                console.log("changed to 0")
                 this.x = 0
                 this.y = this.scene.game.config.height/2 
                 break;
