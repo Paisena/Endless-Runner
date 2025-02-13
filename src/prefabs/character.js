@@ -40,6 +40,7 @@ class character extends Phaser.GameObjects.Sprite {
             }
         }
     }
+    
     updateCar() {
         switch (this.position) {
             case 0:
