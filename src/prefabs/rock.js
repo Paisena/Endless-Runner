@@ -4,4 +4,8 @@ class rock extends Phaser.GameObjects.Sprite {
         scene.add.existing(this)
         
     }
+
+    update() {
+        this.y -= -1
+    }
 }
