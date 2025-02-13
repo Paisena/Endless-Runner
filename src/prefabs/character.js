@@ -40,20 +40,20 @@ class character extends Phaser.GameObjects.Sprite {
             }
         }
     }
-    
+
     updateCar() {
         switch (this.position) {
             case 0:
                 this.x = 0
-                this.y = this.scene.game.config.height/2 
+                this.y = this.scene.game.config.height - 100
                 break;
             case 1:
                 this.x = this.scene.game.config.width/2
-                this.y = this.scene.game.config.height/2 
+                this.y = this.scene.game.config.height - 100
                 break;
             case 2:
                 this.x = this.scene.game.config.width - 100
-                this.y = this.scene.game.config.height/2  
+                this.y = this.scene.game.config.height - 100
             default:
                 break;
         }
