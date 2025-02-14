@@ -1,8 +1,7 @@
 // Project: Endless Runner
 // Name: Jonathan Ng
-// Game Title: TODODODODOODODODOD
-// Approximate Hours: TODODODOODODODODO 
-// Date: 2/10/2025
+// Game Title: Car Multitasking
+// Approximate Hours: 15 Hrs 
 
 'use strict'
 
