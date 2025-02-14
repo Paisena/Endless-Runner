@@ -5,9 +5,13 @@ class Play extends Phaser.Scene {
 
     create() {
 
-        this.currentLetter = 0
+        this.isRunning = true
 
-        this.ROCK_SPAWN_TIME = 3000
+        this.currentLetter = 0
+        this.count = 1000
+        this.score = 0
+
+        this.ROCK_SPAWN_TIME = 1000
         this.WORD_SPAWN_TIME = 5000
         
         this.wordList = ["plane", "hi", "cow", "make", "half"]
@@ -42,11 +46,6 @@ class Play extends Phaser.Scene {
 
         })
         this.add.rectangle(0, 0, this.game.config.width,this.game.config.width, 0x00FF00).setOrigin(0,0)
-        this.plane = this.input.keyboard.createCombo("plane", {
-            loop:true,
-            resetOnMatch:true,
-        })
-        this.input.keyboard.createCombo("pine")
 
         
         let wordConfig = {
@@ -61,27 +60,21 @@ class Play extends Phaser.Scene {
             },
             fixedWidth: 1000
         }
+
         this.wordUI = this.add.text(0 , this.game.config.height - 100, "word list:\n", wordConfig)
+        this.scoreUI = this.add.text(0 , this.game.config.height/2 - 100, "word list:\n", wordConfig)
+        this.timerUI = this.add.text(0 , 100, "word list:\n", wordConfig)
 
         this.input.keyboard.on("keycombomatch",  (combo, event) => {
             console.log('Konami Code entered!')
-            console.dir(combo)
-            let word = String.fromCharCode(combo.keyCodes);
-            
-
-            //console.log(word)
+            this.wordFound()            
             for (let i = 0; i < this.wordPresent.length; i++) {
-                let asciiArray = [];
                 //console.log(this.wordPresent[i])
                 
                 if (combo.keyCodes == this.wordPresent[i].keyCodes) {
                     this.removeWord(i)
                 }
             }
-            // if(combo === this.plane) {
-            //     console.log("plane")
-            //     console.log(this.plane.matched)
-            // }
         });
 
         
@@ -98,70 +91,79 @@ class Play extends Phaser.Scene {
     }
 
     update() {
-        //console.log(`current at: ${this.wordPresent[i].current}`)
-        this.textUpdate()
-        if(Phaser.Input.Keyboard.JustUp(keyLEFT)) {
-            //console.log("plane enabled")
-            for (let i = 0; i < this.wordPresent.length; i++) {
-                if (this.wordPresent[i].enabled == false)
-                {
-                    
-                    this.wordPresent[i].enabled = true
-                    this.wordPresent[i].current = this.currentLetter
-                    console.log(`currentLetter at ${this.currentLetter}`)
+        if(this.isRunning) {
+            this.count -= 1
+            //console.log(this.count)
+            //console.log(`current at: ${this.wordPresent[i].current}`)
+            this.textUpdate()
+            if(Phaser.Input.Keyboard.JustUp(keyLEFT)) {
+                //console.log("plane enabled")
+                for (let i = 0; i < this.wordPresent.length; i++) {
+                    if (this.wordPresent[i].enabled == false)
+                    {
+                        
+                        this.wordPresent[i].enabled = true
+                        this.wordPresent[i].current = this.currentLetter
+                        console.log(`currentLetter at ${this.currentLetter}`)
+                    }
                 }
             }
-            
-        }
 
-        if(Phaser.Input.Keyboard.JustUp(keyRIGHT)) {
-            //console.log("plane enabled")
-            for (let i = 0; i < this.wordPresent.length; i++) {
-                if (this.wordPresent[i].enabled == false)
-                {
-                    
-                    this.wordPresent[i].enabled = true
-                    this.wordPresent[i].current = this.currentLetter
-                    console.log(`currentLetter at ${this.currentLetter}`)
+            if(Phaser.Input.Keyboard.JustUp(keyRIGHT)) {
+                //console.log("plane enabled")
+                for (let i = 0; i < this.wordPresent.length; i++) {
+                    if (this.wordPresent[i].enabled == false)
+                    {
+                        
+                        this.wordPresent[i].enabled = true
+                        this.wordPresent[i].current = this.currentLetter
+                        console.log(`currentLetter at ${this.currentLetter}`)
+                    }
+                }   
+            }
+            this.character.update()
+            for (let i = 0; i < this.rockArray.length; i++)
+            {
+                this.rockArray[i].update()
+                if(this.checkCollision(this.character, this.rockArray[i])) {
+                    this.endGame()
                 }
             }
-            
-        }
-        this.character.update()
-        for (let i = 0; i < this.rockArray.length; i++)
-        {
-            this.rockArray[i].update()
-            this.checkCollision(this.character, this.rockArray[i])
-        }
 
-        
-
+            if(this.count == 0) {
+                this.endGame()
+            }
+        }
     }
 
     spawnRock() {
-        this.randX = Math.round(Phaser.Math.Between(0,2))
-        this.y = 0
-        if(this.randX == 0) {
-            this.randX = 0
+        if(this.isRunning) {
+            this.randX = Math.round(Phaser.Math.Between(0,2))
+            this.y = 0
+            if(this.randX == 0) {
+                this.randX = 0
+            }
+            else if(this.randX == 1) {
+                this.randX = this.game.config.width/2
+            }
+            else if(this.randX == 2) {
+                this.randX = this.game.config.width - 100
+            }
+            this.newRock = new rock(this, this.randX, this.y, 'fakeRock').setOrigin(0.5,0.5)
+            this.rockArray.push(this.newRock)
         }
-        else if(this.randX == 1) {
-            this.randX = this.game.config.width/2
-        }
-        else if(this.randX == 2) {
-            this.randX = this.game.config.width - 100
-        }
-        this.newRock = new rock(this, this.randX, this.y, 'fakeRock').setOrigin(0.5,0.5)
-        this.rockArray.push(this.newRock)
     }
 
     createWord() {
-        this.whichWord = Math.floor(Math.random() * this.wordList.length)
-        console.log(`type: ${this.wordList[this.whichWord]}`)
+        if(this.isRunning) {
+            this.whichWord = Math.floor(Math.random() * this.wordList.length)
+            console.log(`type: ${this.wordList[this.whichWord]}`)
 
-        this.newWord = this.input.keyboard.createCombo(this.wordList[this.whichWord])
-        this.wordPresent.push(this.newWord)
-        this.wordPresentTxt.push(this.wordList[this.whichWord])
-        this.wordUI.text += `\n${this.wordList[this.whichWord]}`
+            this.newWord = this.input.keyboard.createCombo(this.wordList[this.whichWord])
+            this.wordPresent.push(this.newWord)
+            this.wordPresentTxt.push(this.wordList[this.whichWord])
+            this.wordUI.text += `\n${this.wordList[this.whichWord]}`
+        }
     }
 
     textUpdate() {
@@ -169,13 +171,16 @@ class Play extends Phaser.Scene {
         for (let i = 0; i < this.wordPresent.length; i++) {
             this.wordUI.text += this.wordPresentTxt[i] + "\n"
         }
+
+        this.scoreUI.text = "Score: " + this.score
+        this.timerUI.text = "time: " + this.count
     }
 
     removeWord(index) {
         this.wordPresent.splice(index, 1)
         this.wordPresentTxt.splice(index, 1)
-        console.log(this.wordPresentTxt)
-        console.log("removed")
+        //console.log(this.wordPresentTxt)
+        //console.log("removed")
     }
 
     checkCollision(char, rock) {
@@ -194,5 +199,37 @@ class Play extends Phaser.Scene {
     changeSpeed(speed) {
         this.timer.delay = speed
         this.wordTimer.delay = speed
+    }
+
+    wordFound() {
+        this.count += 1000
+        this.score += 1000
+        this.checkNextLevel()
+    }
+
+    checkNextLevel() {
+        if (this.score%1000 == 0 && (this.timer.delay-500 > 0 && this.wordTimer.delay-500 > 0)) {
+            console.log("next level!")
+            this.timer.delay -= 500
+            this.wordTimer.delay -= 500
+            console.log(this.timer.delay)
+        }
+    }
+
+    endGame() {
+        let wordConfig = {
+            fontFamily: 'Courier',
+            fontSize: '28px',
+            backgroundColor: '#F3B141',
+            color: '#843605',
+            align: 'center',
+            padding: {
+                top: 5,
+                bottom: 5,
+            },
+            fixedWidth: 1000
+        }
+        this.isRunning = false
+        this.GGUI = this.add.text(0 , 100, "GG UTRASH", wordConfig)
     }
 }
