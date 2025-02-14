@@ -7,7 +7,10 @@ class character extends Phaser.GameObjects.Sprite {
     }
 
     update() {
+        
+        this.sfx1 = this.scene.sound.add('skid', {volume: 0.1});
         if(Phaser.Input.Keyboard.JustDown(keyLEFT)) {
+            this.sfx1.play()
             switch (this.position) {
                 case 1:
                     this.position = 0
@@ -24,6 +27,7 @@ class character extends Phaser.GameObjects.Sprite {
             }
         }
         else if(Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
+            this.sfx1.play()
             switch (this.position) {
                 case 1:
                     this.position = 2
@@ -44,7 +48,7 @@ class character extends Phaser.GameObjects.Sprite {
     updateCar() {
         switch (this.position) {
             case 0:
-                this.x = 150
+                this.x = 475
                 this.y = this.scene.game.config.height - 100
                 break;
             case 1:
@@ -52,7 +56,7 @@ class character extends Phaser.GameObjects.Sprite {
                 this.y = this.scene.game.config.height - 100
                 break;
             case 2:
-                this.x = this.scene.game.config.width - 150
+                this.x = this.scene.game.config.width - 475
                 this.y = this.scene.game.config.height - 100
             default:
                 break;
