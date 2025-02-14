@@ -11,7 +11,7 @@ class Play extends Phaser.Scene {
         this.count = 1000
         this.score = 0
 
-        this.ROCK_SPAWN_TIME = 1000
+        this.ROCK_SPAWN_TIME = 3000
         this.WORD_SPAWN_TIME = 5000
         
         this.wordList = ["plane", "hi", "cow", "make", "half"]
@@ -19,6 +19,10 @@ class Play extends Phaser.Scene {
         this.wordPresent = []
         this.wordPresentTxt = []
         
+        //this.starfield = this.add.image(0, 0, 1900, 980, 'road').setOrigin(0, 0)
+
+        
+
         console.log("play started")
         this.input.keyboard.on("keydown", event => {
             if(event.keyCode == 37) {
@@ -46,7 +50,7 @@ class Play extends Phaser.Scene {
 
         })
         this.add.rectangle(0, 0, this.game.config.width,this.game.config.width, 0x00FF00).setOrigin(0,0)
-
+        this.starfield = this.add.tileSprite(-250, 0, 2300, 980, 'road').setOrigin(0, 0)
         
         let wordConfig = {
             fontFamily: 'Courier',
@@ -58,12 +62,11 @@ class Play extends Phaser.Scene {
                 top: 5,
                 bottom: 5,
             },
-            fixedWidth: 1000
+            fixedWidth: 500
         }
-
-        this.wordUI = this.add.text(0 , this.game.config.height - 100, "word list:\n", wordConfig)
-        this.scoreUI = this.add.text(0 , this.game.config.height/2 - 100, "word list:\n", wordConfig)
-        this.timerUI = this.add.text(0 , 100, "word list:\n", wordConfig)
+        this.wordUI = this.add.text(0 , 0, "word list:\n", wordConfig)
+        this.scoreUI = this.add.text(this.game.config.width/2-250 , 0, "word list:\n", wordConfig)
+        this.timerUI = this.add.text(this.game.config.width-500 , 0, "word list:\n", wordConfig)
 
         this.input.keyboard.on("keycombomatch",  (combo, event) => {
             console.log('Konami Code entered!')
@@ -80,7 +83,7 @@ class Play extends Phaser.Scene {
         
         
         this.rockArray = []
-        this.character = new character(this, 0, this.game.config.height-100, 'fakeCar').setOrigin(0.5, 0.5)
+        this.character = new character(this, 150, this.game.config.height-100, 'car').setOrigin(0.5, 0.5)
         
         this.timer = this.time.addEvent({delay: this.ROCK_SPAWN_TIME, loop: true, callback: this.spawnRock, callbackScope: this})
         this.wordTimer = this.time.addEvent({delay:this.WORD_SPAWN_TIME, loop: true, callback: this.createWord, callbackScope: this})
@@ -92,6 +95,7 @@ class Play extends Phaser.Scene {
 
     update() {
         if(this.isRunning) {
+            this.starfield.tilePositionY -= 4
             this.count -= 1
             //console.log(this.count)
             //console.log(`current at: ${this.wordPresent[i].current}`)
@@ -141,15 +145,17 @@ class Play extends Phaser.Scene {
             this.randX = Math.round(Phaser.Math.Between(0,2))
             this.y = 0
             if(this.randX == 0) {
-                this.randX = 0
+                this.randX = 150
             }
             else if(this.randX == 1) {
                 this.randX = this.game.config.width/2
             }
             else if(this.randX == 2) {
-                this.randX = this.game.config.width - 100
+                this.randX = this.game.config.width - 150
             }
-            this.newRock = new rock(this, this.randX, this.y, 'fakeRock').setOrigin(0.5,0.5)
+            this.newRock = new rock(this, this.randX, this.y, 'rock').setOrigin(0.5,0.5)
+            this.newRock.scaleX =.5
+            this.newRock.scaleY = .5
             this.rockArray.push(this.newRock)
         }
     }
@@ -187,8 +193,8 @@ class Play extends Phaser.Scene {
         // simple AABB checking 
         if( rock.x < char.x + char.width && 
             rock.x + rock.width > char.x && 
-            rock.y < char.y + char.height && 
-            rock.height + rock.y > char.y) {
+            rock.y < char.y + char.height  + 2000 && 
+            rock.height + rock.y > char.y + 200) {
             return true
         } else {
             //console.log("not hit")
@@ -208,7 +214,7 @@ class Play extends Phaser.Scene {
     }
 
     checkNextLevel() {
-        if (this.score%1000 == 0 && (this.timer.delay-500 > 0 && this.wordTimer.delay-500 > 0)) {
+        if (this.score%5000 == 0 && (this.timer.delay-500 > 0 && this.wordTimer.delay-500 > 0)) {
             console.log("next level!")
             this.timer.delay -= 500
             this.wordTimer.delay -= 500
@@ -227,9 +233,9 @@ class Play extends Phaser.Scene {
                 top: 5,
                 bottom: 5,
             },
-            fixedWidth: 1000
+            fixedWidth: 500
         }
         this.isRunning = false
-        this.GGUI = this.add.text(0 , 100, "GG UTRASH", wordConfig)
+        this.GGUI = this.add.text(this.game.config.width/2-250 , 100, "GG UTRASH", wordConfig)
     }
 }
